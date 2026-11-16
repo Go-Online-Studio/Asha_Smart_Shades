@@ -54,7 +54,7 @@ export default function AboutSection() {
             trigger: section,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -72,7 +72,7 @@ export default function AboutSection() {
               trigger: section,
               start: 'top bottom',
               end: 'bottom top',
-              scrub: true,
+              scrub: 0.5,
             },
           }
         );

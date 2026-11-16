@@ -53,11 +53,16 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth conflicts with GSAP ScrollTrigger on iOS Safari.
+       GSAP handles its own smooth scrolling via scrub; native smooth-scroll
+       fights the pinned horizontal gallery on iPhones and causes it to freeze.
+       Smooth scroll-to is still handled programmatically via window.scrollTo(). */
     overflow-x: hidden;
     max-width: 100vw;
     scrollbar-width: thin;
     scrollbar-color: #2a6fdd #0b0d13;
+    /* iOS Safari: prevent rubber-banding from interfering with pinned sections */
+    -webkit-overflow-scrolling: touch;
   }
   body {
     @apply font-sans bg-brand-light text-brand-charcoal antialiased overflow-x-hidden selection:bg-brand-blue selection:text-white;

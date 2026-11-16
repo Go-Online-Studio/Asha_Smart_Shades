@@ -34,7 +34,7 @@ export default function Projects() {
             trigger: section,
             start: 'top 80%',
             end: 'top 15%',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -50,7 +50,7 @@ export default function Projects() {
             trigger: section,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -66,7 +66,7 @@ export default function Projects() {
             trigger: '.project-diagonal-card-1',
             start: 'top 85%',
             end: 'top 55%',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -82,7 +82,7 @@ export default function Projects() {
             trigger: '.project-diagonal-card-2',
             start: 'top 95%',
             end: 'bottom 80%',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );

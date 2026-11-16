@@ -41,7 +41,7 @@ export const categories = [
 ];
 
 export default function ExploreProducts() {
-  // Outer wrapperRef stays a direct child of <main> so ScrollTrigger's pin-spacer
+  // wrapperRef stays a direct child of <main> so ScrollTrigger's pin-spacer
   // on sectionRef never causes React Router unmount removeChild errors.
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -62,7 +62,12 @@ export default function ExploreProducts() {
     const ctx = gsap.context(() => {
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const slides = gsap.utils.toArray<HTMLElement>('.explore-slide', track);
-        const getMaxScroll = () => Math.max(0, track.scrollWidth - window.innerWidth);
+
+        const getMaxScroll = () => {
+          const trackW = track.scrollWidth;
+          const vw = section.offsetWidth;
+          return Math.max(0, trackW - vw);
+        };
 
         const horizontalTween = gsap.to(track, {
           x: () => -getMaxScroll(),
@@ -70,10 +75,14 @@ export default function ExploreProducts() {
           scrollTrigger: {
             trigger: section,
             pin: true,
-            scrub: 0.65,
+            // Default pinType (fixed) — most reliable per GSAP docs.
+            // overflow: hidden is on the INNER viewport div, NOT on the
+            // pinned section itself, so the pin-spacer works cleanly.
+            scrub: 0.5,
             start: 'top top',
             end: () => `+=${getMaxScroll()}`,
             invalidateOnRefresh: true,
+            anticipatePin: 1,
             onUpdate: (self) => {
               setProgress(self.progress);
               const idx = Math.min(
@@ -93,7 +102,6 @@ export default function ExploreProducts() {
           const parallaxMedia = slide.querySelector('.explore-slide-parallax') as HTMLElement | null;
           const captionBox = slide.querySelector('.explore-slide-caption') as HTMLElement | null;
 
-          // 1. Entrance Parallax: inner image translates at a different rate than slide container
           if (parallaxMedia && i > 0) {
             gsap.fromTo(
               parallaxMedia,
@@ -107,7 +115,7 @@ export default function ExploreProducts() {
                   containerAnimation: horizontalTween,
                   start: 'left right',
                   end: 'left left',
-                  scrub: true,
+                  scrub: 0.5,
                 },
               }
             );
@@ -126,14 +134,12 @@ export default function ExploreProducts() {
                   containerAnimation: horizontalTween,
                   start: 'left 85%',
                   end: 'left 25%',
-                  scrub: true,
+                  scrub: 0.5,
                 },
               }
             );
           }
 
-          // 2. Exit Zoom: only the child (.explore-slide-zoom) scales up as the slide exits left;
-          // the parent (.explore-slide) has overflow: hidden and translates horizontally without distortion.
           if (zoomChild && i < slides.length - 1) {
             gsap.fromTo(
               zoomChild,
@@ -147,7 +153,7 @@ export default function ExploreProducts() {
                   containerAnimation: horizontalTween,
                   start: 'left left',
                   end: 'right left',
-                  scrub: true,
+                  scrub: 0.5,
                 },
               }
             );
@@ -158,7 +164,7 @@ export default function ExploreProducts() {
 
     const handleResize = debounce(() => {
       ScrollTrigger.refresh();
-    }, 200);
+    }, 250);
 
     window.addEventListener('resize', handleResize);
 
@@ -196,133 +202,145 @@ export default function ExploreProducts() {
 
   return (
     <div ref={wrapperRef} className="w-full relative">
+      {/*
+        CRITICAL GSAP pin architecture:
+        - sectionRef (pinned element): NO overflow-hidden here.
+          GSAP wraps this in a pin-spacer div with position:fixed.
+          overflow-hidden on the pinned element clips the fixed positioning.
+        - Inner viewport div: overflow-hidden goes HERE to clip the
+          horizontal track as it translates left.
+      */}
       <section
         ref={sectionRef}
         aria-label="Explore Our Products Carousel"
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="relative w-full h-screen min-h-[640px] bg-[#07090e] overflow-hidden focus:outline-none"
+        className="relative w-full h-[100dvh] min-h-[640px] bg-[#07090e] focus:outline-none"
       >
-        {/* Fixed/Anchored Corner Title visible throughout pinned scroll */}
-        <div className="pointer-events-none absolute top-24 left-6 sm:left-10 lg:left-14 z-30">
-          <div className="px-5 py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-2xl inline-flex items-center gap-4">
-            <h2 className="text-xs sm:text-sm font-serif text-white uppercase tracking-[0.22em]">
-              Explore Our Products
-            </h2>
-            <span aria-hidden="true" className="text-white/30">·</span>
-            <span className="text-xs font-sans text-brand-green tabular-nums tracking-widest">
-              0{activeIndex + 1} / 0{categories.length}
-            </span>
-          </div>
-        </div>
-
-        {/* Top-Right Scroll Indicator */}
-        <div className="pointer-events-none absolute top-24 right-6 sm:right-10 lg:right-14 z-30 hidden md:flex items-center gap-3">
-          <div className="px-4 py-2 rounded-full bg-[#0b0d13]/80 backdrop-blur-2xl border border-white/15 flex items-center gap-2.5 text-xs text-white/80 tracking-wider">
-            <MoveHorizontal className="w-4 h-4 text-brand-green" />
-            <span>Scroll to Explore</span>
-          </div>
-        </div>
-
-        {/* Horizontal Slide Track (Scroll-Scrubbed Only — No Conflicting Drag) */}
-        <div
-          ref={trackRef}
-          className="flex h-full w-max will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
-        >
-          {categories.map((cat, idx) => (
-            <div
-              key={idx}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${idx + 1} of ${categories.length}: ${cat.title}`}
-              className="explore-slide relative w-screen h-screen min-h-[640px] shrink-0 overflow-hidden flex items-center justify-center px-4 sm:px-8 lg:px-14 motion-reduce:snap-start"
-            >
-              {/* Atmospheric Blurred Background Layer */}
-              <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
-                <img
-                  src={cat.desktopImage || cat.image}
-                  alt=""
-                  aria-hidden="true"
-                  className="w-full h-full object-cover scale-125 blur-[70px]"
-                />
-                <div className="absolute inset-0 bg-[#07090e]/60" />
-              </div>
-
-              {/* Large Full-Viewport Showcase Stage */}
-              <div className="relative z-10 w-full max-w-7xl h-[72vh] sm:h-[76vh] flex items-end">
-                {/* Parent Container with overflow-hidden that clips the zooming child */}
-                <div className="relative w-full h-full rounded-3xl sm:rounded-[2.5rem] overflow-hidden border border-white/15 shadow-[0_35px_100px_rgba(0,0,0,0.85)]">
-                  {/* Animated Child (.explore-slide-zoom) that scales on exit */}
-                  <div className="explore-slide-zoom relative w-full h-full overflow-hidden will-change-transform">
-                    {/* Inner Parallax Image (.explore-slide-parallax) with Dual Desktop/Mobile Picture Support */}
-                    <div className="explore-slide-parallax relative w-[114%] max-w-none -left-[7%] h-full will-change-transform">
-                      <picture className="block w-full h-full">
-                        <source
-                          media="(max-width: 768px)"
-                          srcSet={cat.mobileImage || cat.desktopImage || cat.image}
-                        />
-                        <img
-                          src={cat.desktopImage || cat.image}
-                          alt={cat.title}
-                          className="w-full h-full object-cover object-center"
-                        />
-                      </picture>
-                    </div>
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07090e]/85 via-transparent to-black/20" />
-                  </div>
-                </div>
-
-                {/* Compact Glass Title & Nav-Type Pill CTA at Bottom-Left */}
-                <div className="explore-slide-caption absolute bottom-5 sm:bottom-8 left-5 sm:left-8 z-20 max-w-md w-[calc(100%-2.5rem)] sm:w-auto">
-                  <div className="p-5 sm:p-6 rounded-2xl bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-8">
-                    <div>
-                      <span className="block text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-1">
-                        0{idx + 1} · Architectural System
-                      </span>
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-white leading-tight">
-                        {cat.title}
-                      </h3>
-                    </div>
-
-                    <Link
-                      to={cat.link}
-                      className="group inline-flex items-center justify-between gap-3 pl-5 pr-2 py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95"
-                    >
-                      <span>Explore</span>
-                      <span className="w-7 h-7 rounded-full bg-white/20 group-hover:bg-brand-blue group-hover:text-white flex items-center justify-center transition-colors">
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+        {/* Inner viewport — this is the clipping container */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Fixed/Anchored Corner Title visible throughout pinned scroll */}
+          <div className="pointer-events-none absolute top-24 left-6 sm:left-10 lg:left-14 z-30">
+            <div className="px-5 py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-2xl inline-flex items-center gap-4">
+              <h2 className="text-xs sm:text-sm font-serif text-white uppercase tracking-[0.22em]">
+                Explore Our Products
+              </h2>
+              <span aria-hidden="true" className="text-white/30">·</span>
+              <span className="text-xs font-sans text-brand-green tabular-nums tracking-widest">
+                0{activeIndex + 1} / 0{categories.length}
+              </span>
             </div>
-          ))}
-        </div>
-
-        {/* Bottom Progress Bar & Quick Pill Slide Navigation */}
-        <div className="absolute bottom-5 left-6 sm:left-10 lg:left-14 right-6 sm:right-10 lg:right-14 z-30 flex items-center justify-between gap-6 pointer-events-none">
-          <div className="w-full max-w-md h-[2px] bg-white/15 overflow-hidden rounded-full">
-            <div
-              className="h-full bg-brand-blue transition-transform duration-150 origin-left"
-              style={{ transform: `scaleX(${Math.max(0.08, progress)})` }}
-            />
           </div>
 
-          <div className="flex items-center gap-2 pointer-events-auto">
+          {/* Top-Right Scroll Indicator */}
+          <div className="pointer-events-none absolute top-24 right-6 sm:right-10 lg:right-14 z-30 hidden md:flex items-center gap-3">
+            <div className="px-4 py-2 rounded-full bg-[#0b0d13]/80 backdrop-blur-2xl border border-white/15 flex items-center gap-2.5 text-xs text-white/80 tracking-wider">
+              <MoveHorizontal className="w-4 h-4 text-brand-green" />
+              <span>Scroll to Explore</span>
+            </div>
+          </div>
+
+          {/* Horizontal Slide Track */}
+          <div
+            ref={trackRef}
+            style={{ touchAction: 'pan-y pinch-zoom' }}
+            className="flex h-full w-max motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
+          >
             {categories.map((cat, idx) => (
-              <button
+              <div
                 key={idx}
-                type="button"
-                onClick={() => jumpToSlide(idx)}
-                aria-label={`Go to ${cat.title}`}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  activeIndex === idx
-                    ? 'w-10 bg-brand-blue'
-                    : 'w-2.5 bg-white/30 hover:bg-white/60'
-                }`}
-              />
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${idx + 1} of ${categories.length}: ${cat.title}`}
+                className="explore-slide relative w-screen h-[100dvh] min-h-[640px] shrink-0 overflow-hidden flex items-center justify-center px-4 sm:px-8 lg:px-14 motion-reduce:snap-start"
+              >
+                {/* Atmospheric Blurred Background Layer */}
+                <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
+                  <img
+                    src={cat.desktopImage || cat.image}
+                    alt=""
+                    aria-hidden="true"
+                    className="w-full h-full object-cover scale-125 blur-[70px]"
+                  />
+                  <div className="absolute inset-0 bg-[#07090e]/60" />
+                </div>
+
+                {/* Large Full-Viewport Showcase Stage */}
+                <div className="relative z-10 w-full max-w-7xl h-[72dvh] sm:h-[76dvh] flex items-end">
+                  {/* Parent Container with overflow-hidden that clips the zooming child */}
+                  <div className="relative w-full h-full rounded-3xl sm:rounded-[2.5rem] overflow-hidden border border-white/15 shadow-[0_35px_100px_rgba(0,0,0,0.85)]">
+                    {/* Animated Child (.explore-slide-zoom) that scales on exit */}
+                    <div className="explore-slide-zoom relative w-full h-full overflow-hidden will-change-transform">
+                      {/* Inner Parallax Image (.explore-slide-parallax) */}
+                      <div className="explore-slide-parallax relative w-[114%] max-w-none -left-[7%] h-full will-change-transform">
+                        <picture className="block w-full h-full">
+                          <source
+                            media="(max-width: 768px)"
+                            srcSet={cat.mobileImage || cat.desktopImage || cat.image}
+                          />
+                          <img
+                            src={cat.desktopImage || cat.image}
+                            alt={cat.title}
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </picture>
+                      </div>
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07090e]/85 via-transparent to-black/20" />
+                    </div>
+                  </div>
+
+                  {/* Compact Glass Title & Nav-Type Pill CTA at Bottom-Left */}
+                  <div className="explore-slide-caption absolute bottom-5 sm:bottom-8 left-5 sm:left-8 z-20 max-w-md w-[calc(100%-2.5rem)] sm:w-auto">
+                    <div className="p-5 sm:p-6 rounded-2xl bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-8">
+                      <div>
+                        <span className="block text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-1">
+                          0{idx + 1} · Architectural System
+                        </span>
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-white leading-tight">
+                          {cat.title}
+                        </h3>
+                      </div>
+
+                      <Link
+                        to={cat.link}
+                        className="group inline-flex items-center justify-between gap-3 pl-5 pr-2 py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95"
+                      >
+                        <span>Explore</span>
+                        <span className="w-7 h-7 rounded-full bg-white/20 group-hover:bg-brand-blue group-hover:text-white flex items-center justify-center transition-colors">
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
+          </div>
+
+          {/* Bottom Progress Bar & Quick Pill Slide Navigation */}
+          <div className="absolute bottom-5 left-6 sm:left-10 lg:left-14 right-6 sm:right-10 lg:right-14 z-30 flex items-center justify-between gap-6 pointer-events-none">
+            <div className="w-full max-w-md h-[2px] bg-white/15 overflow-hidden rounded-full">
+              <div
+                className="h-full bg-brand-blue transition-transform duration-150 origin-left"
+                style={{ transform: `scaleX(${Math.max(0.08, progress)})` }}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pointer-events-auto">
+              {categories.map((cat, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => jumpToSlide(idx)}
+                  aria-label={`Go to ${cat.title}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    activeIndex === idx
+                      ? 'w-10 bg-brand-blue'
+                      : 'w-2.5 bg-white/30 hover:bg-white/60'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>

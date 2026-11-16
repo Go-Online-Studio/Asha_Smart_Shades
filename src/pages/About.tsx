@@ -51,7 +51,7 @@ export default function About() {
               trigger: heroWrap,
               start: 'top bottom',
               end: 'bottom top',
-              scrub: true,
+              scrub: 0.5,
             },
           }
         );

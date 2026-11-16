@@ -37,7 +37,7 @@ export default function Products() {
             trigger: section,
             start: 'top 75%',
             end: 'top 20%',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -53,7 +53,7 @@ export default function Products() {
             trigger: section,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: true,
+            scrub: 0.5,
           },
         }
       );
@@ -85,7 +85,7 @@ export default function Products() {
               trigger: section,
               start: 'top bottom',
               end: 'bottom top',
-              scrub: true,
+              scrub: 0.5,
             },
           }
         );
