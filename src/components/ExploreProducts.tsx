@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { ArrowUpRight, MoveHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
@@ -46,21 +46,23 @@ export const categories = [
 ];
 
 export default function ExploreProducts() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const activeIndexRef = useRef(0);
   const stRef = useRef<ScrollTrigger | null>(null);
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Guarantee plugin is registered before creating animation
     gsap.registerPlugin(ScrollTrigger);
 
+    const wrapper = wrapperRef.current;
     const section = sectionRef.current;
     const track = trackRef.current;
-    if (!section || !track) return;
+    if (!wrapper || !section || !track) return;
 
     if (prefersReducedMotion()) {
       return;
@@ -68,14 +70,10 @@ export default function ExploreProducts() {
 
     const totalSlides = categories.length;
 
-    // Use gsap.context scoped to section for clean React lifecycle and unmounting
+    // Keep ScrollTrigger's pin spacer within the gallery wrapper during cleanup.
     const ctx = gsap.context(() => {
-      // Calculate exact horizontal scroll travel:
-      // Track has 4 full-width slides, so travel distance is (totalSlides - 1) * viewport width
       const getScrollDistance = () => {
-        const vw = section.clientWidth || window.innerWidth;
-        const trackW = track.scrollWidth || totalSlides * vw;
-        return Math.max(0, trackW - vw);
+        return Math.max(0, track.scrollWidth - section.clientWidth);
       };
 
       const horizontalTween = gsap.to(track, {
@@ -87,20 +85,26 @@ export default function ExploreProducts() {
           scrub: 0.5,
           start: 'top top',
           end: () => `+=${getScrollDistance()}`,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            setProgress(self.progress);
+            if (progressRef.current) {
+              progressRef.current.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
+            }
             const currentIdx = Math.min(
               totalSlides - 1,
               Math.max(0, Math.round(self.progress * (totalSlides - 1)))
             );
-            setActiveIndex(currentIdx);
+            if (currentIdx !== activeIndexRef.current) {
+              activeIndexRef.current = currentIdx;
+              setActiveIndex(currentIdx);
+            }
           },
         },
       });
 
       stRef.current = horizontalTween.scrollTrigger || null;
-    }, section);
+    }, wrapper);
 
     // Initial refresh after microtask layout
     const refreshId = requestAnimationFrame(() => {
@@ -157,14 +161,16 @@ export default function ExploreProducts() {
   };
 
   return (
-    <div className="w-full relative">
+    <div ref={wrapperRef} className="w-full relative">
       <section
         ref={sectionRef}
         aria-label="Explore Our Products Gallery"
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="relative w-full h-screen bg-[#07090e] overflow-hidden focus:outline-none"
+        className="relative w-full h-screen bg-[#07090e] focus:outline-none"
+        style={{ height: '100svh' }}
       >
+        <div className="absolute inset-0 overflow-hidden">
         {/* Fixed/Anchored Corner Title badge */}
         <div className="pointer-events-none absolute top-20 sm:top-24 left-4 sm:left-10 lg:left-14 z-30">
           <div className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-2xl inline-flex items-center gap-3 sm:gap-4">
@@ -189,8 +195,7 @@ export default function ExploreProducts() {
         {/* Horizontal Slide Track */}
         <div
           ref={trackRef}
-          className="flex flex-row flex-nowrap h-full will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
-          style={{ width: `${categories.length * 100}vw` }}
+          className="flex flex-row flex-nowrap h-full w-max will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
         >
           {categories.map((cat, idx) => (
             <div
@@ -262,8 +267,9 @@ export default function ExploreProducts() {
         <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-10 lg:left-14 right-4 sm:right-10 lg:right-14 z-30 flex items-center justify-between gap-4 sm:gap-6 pointer-events-none">
           <div className="w-full max-w-xs sm:max-w-md h-[2px] bg-white/15 overflow-hidden rounded-full">
             <div
-              className="h-full bg-brand-blue transition-transform duration-150 origin-left"
-              style={{ transform: `scaleX(${Math.max(0.08, progress)})` }}
+              ref={progressRef}
+              className="h-full bg-brand-blue origin-left"
+              style={{ transform: 'scaleX(0.08)' }}
             />
           </div>
 
@@ -282,6 +288,7 @@ export default function ExploreProducts() {
               />
             ))}
           </div>
+        </div>
         </div>
       </section>
     </div>
