@@ -20,16 +20,10 @@ const slides = [
     mobileImage: '/images/BannerMob2.avif',
   },
   {
-    category: 'Project',
-    title: 'Tensile Membranes: Advanced hyperbolic engineered sailing shapes',
-    desktopImage: '/images/Banner3.avif',
-    mobileImage: '/images/BannerMob3.avif',
-  },
-  {
     category: 'Solution',
     title: 'Gazebos & Umbrellas: Luxury garden frameworks & side-pole resort sails',
-    desktopImage: '/images/Banner4.avif',
-    mobileImage: '/images/BannerMob4.avif',
+    desktopImage: '/images/Banner3.avif',
+    mobileImage: '/images/BannerMob3.avif',
   },
 ];
 
@@ -132,7 +126,10 @@ export default function Hero() {
           </div>
 
           {/* Nav-Type Pill Switcher Bar — Fits 100% on Mobile Without Wrapping or Clipping */}
-          <div className="pointer-events-auto grid grid-cols-4 sm:inline-flex items-center gap-1 p-1 sm:p-1.5 rounded-full bg-[#07090e]/80 backdrop-blur-xl border border-white/15 w-full max-w-[280px] sm:max-w-none sm:w-auto">
+          <div
+            className="pointer-events-auto grid sm:inline-flex items-center gap-1 p-1 sm:p-1.5 rounded-full bg-[#07090e]/80 backdrop-blur-xl border border-white/15 w-full max-w-[210px] sm:max-w-none sm:w-auto"
+            style={{ gridTemplateColumns: `repeat(${slides.length}, minmax(0, 1fr))` }}
+          >
             {slides.map((slide, idx) => {
               const isCurrent = idx === activeIndex;
               return (

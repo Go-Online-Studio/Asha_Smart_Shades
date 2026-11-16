@@ -123,7 +123,7 @@ export default function Products() {
           </div>
           <AnimatedHeading
             as="h2"
-            className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-white leading-[1.06] tracking-tight drop-shadow-2xl"
+            className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-white leading-[1.14] tracking-tight drop-shadow-2xl"
           >
             Intelligent Exterior Shading
           </AnimatedHeading>
@@ -158,7 +158,7 @@ export default function Products() {
                 src={productsSectionImage.desktopImage}
                 alt=""
                 aria-hidden="true"
-                className="w-full h-full object-cover object-left-bottom scale-150"
+                className="w-full h-full object-cover origin-[50%_25%]  scale-400"
               />
             </div>
           </div>

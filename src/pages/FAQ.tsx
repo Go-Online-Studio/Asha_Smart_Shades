@@ -7,7 +7,7 @@ import MagneticButton from '../components/ui/MagneticButton';
 export const faqImages = {
   banner: {
     desktopImage: '/images/BannerFAQ.webp',
-    mobileImage: '/images/BannerFAQ.webp',
+    mobileImage: '/images/BannerFAQ_Mob.avif',
   },
   cta: {
     desktopImage: 'https://images.unsplash.com/photo-1522071901873-411886a10004?auto=format&fit=crop&q=80',
@@ -20,7 +20,7 @@ export default function FAQ() {
     <div className="bg-brand-light">
       {/* Full-Width Big Banner Image with Dual Desktop/Mobile Picture Support */}
       <section className="relative w-full h-[70vh] sm:h-[78vh] lg:h-[85vh] min-h-[480px] overflow-hidden bg-[#07090e] text-white">
-        <picture className="block absolute inset-0 w-full h-full">
+        <picture className="block absolute inset-0 w-full h-full object-center">
           <source media="(max-width: 768px)" srcSet={faqImages.banner.mobileImage} />
           <img
             src={faqImages.banner.desktopImage}

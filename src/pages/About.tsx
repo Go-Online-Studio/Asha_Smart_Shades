@@ -8,8 +8,8 @@ import { gsap, prefersReducedMotion, refreshAfterAssetsLoaded } from '../utils/g
 
 export const aboutImages = {
   banner: {
-    desktopImage: '/images/Banner4.avif',
-    mobileImage: '/images/BannerMob4.avif',
+    desktopImage: '/images/Banner3.avif',
+    mobileImage: '/images/BannerMob3.avif',
   },
   bentoLeft: {
     desktopImage: '/images/Product3.avif',

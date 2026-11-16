@@ -126,7 +126,7 @@ export default function AboutSection() {
             </div>
             <AnimatedHeading
               as="h2"
-              className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-brand-charcoal tracking-tight leading-[1.06]"
+              className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-brand-charcoal tracking-tight leading-[1.12]"
             >
               Discover Bespoke{' '}
               <span className="text-brand-blue italic block sm:inline lg:pl-16">
@@ -143,13 +143,13 @@ export default function AboutSection() {
             {/* Secondary Zoomed Detail Lens Frame (Overlaps Main Image on Desktop) */}
             <div
               ref={lensFrameRef}
-              className="hidden lg:block w-56 h-72 self-end lg:-mr-6 rounded-t-full rounded-b-3xl overflow-hidden border-4 border-brand-light shadow-2xl will-change-transform"
+              className="hidden lg:block w-56 h-72 self-end lg:-mr-8 rounded-t-full rounded-b-3xl overflow-hidden border-4 border-brand-light shadow-2xl will-change-transform"
             >
               <img
                 src={aboutSectionImage.desktopImage}
                 alt=""
                 aria-hidden="true"
-                className="w-full h-full object-cover object-right scale-150"
+                className="w-full h-full object-cover object-right scale-250"
               />
             </div>
 

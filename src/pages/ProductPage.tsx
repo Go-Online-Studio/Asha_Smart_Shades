@@ -391,22 +391,16 @@ export default function ProductPage() {
               <Link
                 key={key}
                 to={`/products/${key}`}
-                className={`group relative w-full aspect-[4/3] md:aspect-[16/10] overflow-hidden block rounded-2xl sm:rounded-3xl shadow-xl ${
+                className={`group relative w-full aspect-[16/10] overflow-hidden block rounded-2xl sm:rounded-3xl shadow-xl ${
                   idx === 1 ? 'md:mt-8' : ''
                 }`}
               >
-                <picture className="block w-full h-full">
-                  <source
-                    media="(max-width: 768px)"
-                    srcSet={item.mobileImage || item.desktopImage || item.image}
-                  />
-                  <img
-                    src={item.desktopImage || item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </picture>
+                <img
+                  src={item.desktopImage || item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-charcoal/25 to-transparent" />
                 <div className="absolute top-5 left-5 text-xs text-white/75 tracking-widest tabular-nums">
                   0{idx + 1}

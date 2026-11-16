@@ -57,15 +57,15 @@ export default function Projects() {
 
       gsap.fromTo(
         '.project-diagonal-card-1',
-        { y: 60, opacity: 0 },
+        { y: 50, opacity: 0 },
         {
-          y: -20,
+          y: 0,
           opacity: 1,
           ease: 'none',
           scrollTrigger: {
-            trigger: section,
-            start: 'top 70%',
-            end: 'center center',
+            trigger: '.project-diagonal-card-1',
+            start: 'top 85%',
+            end: 'top 55%',
             scrub: true,
           },
         }
@@ -73,15 +73,15 @@ export default function Projects() {
 
       gsap.fromTo(
         '.project-diagonal-card-2',
-        { y: 90, opacity: 0 },
+        { y: 50, opacity: 0 },
         {
-          y: 20,
+          y: 0,
           opacity: 1,
           ease: 'none',
           scrollTrigger: {
-            trigger: section,
-            start: 'top 55%',
-            end: 'bottom 65%',
+            trigger: '.project-diagonal-card-2',
+            start: 'top 95%',
+            end: 'bottom 80%',
             scrub: true,
           },
         }
@@ -122,7 +122,7 @@ export default function Projects() {
               </span>
               <AnimatedHeading
                 as="h2"
-                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.08] text-white"
+                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.15] text-white"
               >
                 Advanced Tensile Membranes &amp; Canopies
               </AnimatedHeading>
@@ -132,13 +132,13 @@ export default function Projects() {
             </div>
 
             {/* Bottom-Right Offset Card (Cols 7-12, pushed down asymmetrically) */}
-            <div className="lg:col-span-6 lg:mt-40 project-diagonal-card-2 rounded-2xl sm:rounded-tr-[3.5rem] sm:rounded-bl-[3.5rem] sm:rounded-tl-xl sm:rounded-br-xl bg-[#0b0d13]/70 sm:bg-white/10 backdrop-blur-2xl border border-white/20 p-6 sm:p-10 md:p-12 text-white shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
+            <div className="lg:col-span-6 lg:mt-40 project-diagonal-card-2 rounded-2xl sm:rounded-tr-[3.5rem] sm:rounded-bl-[3.5rem] sm:rounded-tl-xl sm:rounded-br-xl bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/20 p-6 sm:p-10 md:p-12 text-white shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
               <span className="inline-block text-xs font-sans uppercase tracking-[0.22em] text-brand-blue mb-3">
                 02 · Spatial Extension
               </span>
               <AnimatedHeading
                 as="h2"
-                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.08] text-white"
+                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.15] text-white"
               >
                 The outdoors as a living space
               </AnimatedHeading>

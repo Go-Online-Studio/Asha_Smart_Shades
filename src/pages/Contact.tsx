@@ -5,8 +5,8 @@ import AnimatedHeading from '../components/ui/AnimatedHeading';
 import MagneticButton from '../components/ui/MagneticButton';
 
 export const contactBanner = {
-  desktopImage: '/images/ContactBanner.webp',
-  mobileImage: '/images/ContactBanner.webp',
+  desktopImage: '/images/ContactBanner.avif',
+  mobileImage: '/images/ContactBannerMob.avif',
 };
 
 export default function Contact() {

@@ -103,12 +103,12 @@ export default function Header() {
         {/* Zone 1: Floating Architectural Brand Pod */}
         <Link
           to="/"
-          className="pointer-events-auto group flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.45)] hover:border-brand-blue/50 transition-all duration-300 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+          className="pointer-events-auto group flex items-center gap-3 px-5 py-1 rounded-full bg-white/85 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.45)] hover:border-brand-blue/50 transition-all duration-300 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
         >
           <img
-            src="/images/asha-logo_Footer.webp"
+            src="/images/asha-logo.webp"
             alt="Asha Smart Shades"
-            className="h-8 md:h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-10 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 

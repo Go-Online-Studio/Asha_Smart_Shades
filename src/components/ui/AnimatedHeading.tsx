@@ -67,8 +67,8 @@ export default function AnimatedHeading({
   }, [delay, stagger, triggerStart, immediate]);
 
   return (
-    <Tag ref={elRef as any} className={`overflow-hidden ${className}`}>
-      <span ref={innerRef} className="block will-change-transform">
+    <Tag ref={elRef as any} className={`overflow-hidden py-1 sm:py-1.5 -my-1 sm:-my-1.5 ${className}`}>
+      <span ref={innerRef} className="block will-change-transform pb-1 sm:pb-1.5">
         {children}
       </span>
     </Tag>
