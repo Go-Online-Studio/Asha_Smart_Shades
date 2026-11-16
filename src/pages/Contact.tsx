@@ -74,7 +74,7 @@ ${formData.message}`;
   };
 
   return (
-    <div className="bg-brand-light text-brand-charcoal min-h-screen overflow-x-hidden">
+    <div className="bg-brand-light text-brand-charcoal min-h-screen overflow-x-clip">
       {/* Full-Width Big Banner Image with Dual Desktop/Mobile Picture Support */}
       <section className="relative w-full h-[70vh] sm:h-[78vh] lg:h-[85vh] min-h-[460px] overflow-hidden bg-[#07090e] text-white">
         <picture className="block absolute inset-0 w-full h-full">

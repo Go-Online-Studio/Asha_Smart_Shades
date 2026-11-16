@@ -5,12 +5,16 @@ import { InertiaPlugin } from 'gsap/InertiaPlugin';
 import { SplitText } from 'gsap/SplitText';
 
 // Explicitly register all official GSAP plugins used across the application
-gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin, SplitText);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin, SplitText);
 
-// Configure ScrollTrigger defaults for smooth architectural feel
-ScrollTrigger.config({
-  ignoreMobileResize: true,
-});
+  // Configure ScrollTrigger: allow auto-refresh on DOM/layout changes so
+  // pinned sections on mobile (iOS/Android) accurately compute coordinates
+  // even after dynamic address bar collapse, font rendering, and asset loading.
+  ScrollTrigger.config({
+    autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load,resize',
+  });
+}
 
 /**
  * Debounce utility (default 200ms) for window resize handlers
