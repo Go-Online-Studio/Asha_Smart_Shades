@@ -11,13 +11,13 @@ import ProductPage from './pages/ProductPage';
 import Footer from './components/Footer';
 import PageLoader from './components/PageLoader';
 import FABs from './components/FABs';
-import { ScrollTrigger, debounce, refreshAfterAssetsLoaded } from './utils/gsap';
+import { safeScrollTriggerRefresh, debounce, refreshAfterAssetsLoaded } from './utils/gsap';
 
 export default function App() {
   useEffect(() => {
     const cleanupAssets = refreshAfterAssetsLoaded(document);
     const handleResize = debounce(() => {
-      ScrollTrigger.refresh();
+      safeScrollTriggerRefresh(200);
     }, 200);
 
     window.addEventListener('resize', handleResize);

@@ -37,17 +37,42 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, delay = 200)
   return debounced;
 }
 
+let refreshTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+/**
+ * Coalesced, scroll-safe refresh utility.
+ * Prevents multiple synchronous ScrollTrigger.refresh() calls from firing
+ * repeatedly during page load or asset streaming, and defers refreshes if
+ * the user is actively scrolling on touch screens to eliminate hitching/glitches.
+ */
+export function safeScrollTriggerRefresh(delay = 150) {
+  if (typeof window === 'undefined') return;
+  if (refreshTimeoutId) {
+    clearTimeout(refreshTimeoutId);
+  }
+  refreshTimeoutId = setTimeout(() => {
+    // If the user is actively scrolling with their finger, don't jerk the DOM;
+    // wait until the scroll comes to rest.
+    if (ScrollTrigger.isScrolling()) {
+      ScrollTrigger.addEventListener('scrollEnd', () => ScrollTrigger.refresh(), { once: true });
+    } else {
+      ScrollTrigger.refresh();
+    }
+    refreshTimeoutId = null;
+  }, delay);
+}
+
 /**
  * Wait for document fonts and all images within a container (or document)
- * before triggering ScrollTrigger.refresh() so pin spacers and scrub distances
- * are calculated with exact dimensions.
+ * before triggering a coalesced ScrollTrigger.refresh() so pin spacers and scrub distances
+ * are calculated with exact dimensions without multiple interrupting reflows.
  */
 export function refreshAfterAssetsLoaded(scope: Document | HTMLElement = document): () => void {
   let cancelled = false;
 
   const triggerRefresh = () => {
     if (cancelled) return;
-    ScrollTrigger.refresh();
+    safeScrollTriggerRefresh(120);
   };
 
   // 1. Wait for web fonts
@@ -62,10 +87,9 @@ export function refreshAfterAssetsLoaded(scope: Document | HTMLElement = documen
   const pendingImages = images.filter((img) => !img.complete);
 
   if (pendingImages.length === 0) {
-    const id = requestAnimationFrame(triggerRefresh);
+    triggerRefresh();
     return () => {
       cancelled = true;
-      cancelAnimationFrame(id);
     };
   }
 

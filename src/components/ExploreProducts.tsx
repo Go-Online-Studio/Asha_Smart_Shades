@@ -7,6 +7,7 @@ import {
   debounce,
   prefersReducedMotion,
   refreshAfterAssetsLoaded,
+  safeScrollTriggerRefresh,
 } from '../utils/gsap';
 
 // Explicitly register plugin at module load
@@ -71,75 +72,87 @@ export default function ExploreProducts() {
 
     const totalSlides = categories.length;
 
-    // Keep ScrollTrigger's pin spacer within the gallery wrapper during cleanup.
-    const ctx = gsap.context(() => {
-      // Calculate exact distance: total slides minus 1, times the section's rendered width
-      const getScrollDistance = () => {
-        const vw = section.clientWidth || window.innerWidth;
-        return (totalSlides - 1) * vw;
-      };
+    // Use gsap.matchMedia scoped to wrapperRef for responsive adaptations and 100% clean teardown
+    const mm = gsap.matchMedia(wrapper);
 
-      const horizontalTween = gsap.to(track, {
-        x: () => -getScrollDistance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          scrub: 0.5,
-          start: 'top top',
-          end: () => `+=${getScrollDistance()}`,
-          invalidateOnRefresh: true,
-          // anticipatePin: 0 prevents the premature jump/glitch when scrolling into the section
-          anticipatePin: 0,
-          fastScrollEnd: true,
-          preventOverlaps: true,
-          onUpdate: (self) => {
-            // Update progress bar directly via DOM transform (zero React latency)
-            if (progressRef.current) {
-              progressRef.current.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
-            }
+    // Responsive rule covering both desktop and mobile viewports
+    mm.add(
+      {
+        isDesktop: '(min-width: 768px)',
+        isMobile: '(max-width: 767px)',
+        reduceMotion: '(prefers-reduced-motion: reduce)',
+      },
+      (context) => {
+        const { reduceMotion } = context.conditions as {
+          isDesktop: boolean;
+          isMobile: boolean;
+          reduceMotion: boolean;
+        };
 
-            const currentIdx = Math.min(
-              totalSlides - 1,
-              Math.max(0, Math.round(self.progress * (totalSlides - 1)))
-            );
+        if (reduceMotion) return;
 
-            if (currentIdx !== activeIndexRef.current) {
-              activeIndexRef.current = currentIdx;
-              if (indexBadgeRef.current) {
-                indexBadgeRef.current.textContent = `0${currentIdx + 1} / 0${totalSlides}`;
+        // Dynamic function-based scroll distance calculation
+        const getScrollDistance = () => {
+          return Math.max(0, track.scrollWidth - section.offsetWidth);
+        };
+
+        const horizontalTween = gsap.to(track, {
+          x: () => -getScrollDistance(),
+          ease: 'none',
+          force3D: true, // Forces persistent GPU compositing layer on WebKit
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            scrub: 0.5,
+            start: 'top top',
+            end: () => `+=${getScrollDistance()}`,
+            invalidateOnRefresh: true, // Recalculates on iPhone rotation and window resize
+            anticipatePin: 0, // Prevents premature locking glitch when scrolling into view
+            onUpdate: (self) => {
+              // Direct GPU transform update for progress bar (zero React re-render latency)
+              if (progressRef.current) {
+                progressRef.current.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
               }
-              setActiveIndex(currentIdx);
-            }
+
+              const currentIdx = Math.min(
+                totalSlides - 1,
+                Math.max(0, Math.round(self.progress * (totalSlides - 1)))
+              );
+
+              if (currentIdx !== activeIndexRef.current) {
+                activeIndexRef.current = currentIdx;
+                if (indexBadgeRef.current) {
+                  indexBadgeRef.current.textContent = `0${currentIdx + 1} / 0${totalSlides}`;
+                }
+                setActiveIndex(currentIdx);
+              }
+            },
           },
-        },
-      });
+        });
 
-      stRef.current = horizontalTween.scrollTrigger || null;
-    }, wrapper);
+        stRef.current = horizontalTween.scrollTrigger || null;
+      }
+    );
 
-    // Initial refresh after microtask layout
-    const refreshId = requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
+    // Initial safe refresh after microtask layout
+    safeScrollTriggerRefresh(60);
 
-    // Refresh after fonts and images finish loading
+    // Refresh after fonts and images finish loading via coalesced handler
     const cleanupAssets = refreshAfterAssetsLoaded(section);
 
     const handleResize = debounce(() => {
-      ScrollTrigger.refresh();
+      safeScrollTriggerRefresh(150);
     }, 200);
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
 
     return () => {
-      cancelAnimationFrame(refreshId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       handleResize.cancel();
       cleanupAssets();
-      ctx.revert();
+      mm.revert(); // Automatically reverts all ScrollTriggers and tweens cleanly
     };
   }, []);
 
@@ -167,7 +180,13 @@ export default function ExploreProducts() {
   };
 
   return (
-    <div ref={wrapperRef} className="w-full relative">
+    <div
+      ref={wrapperRef}
+      className="w-full relative"
+      style={{
+        overscrollBehavior: 'none', // Prevents WebKit rubber-band tearing during pin
+      }}
+    >
       <section
         ref={sectionRef}
         aria-label="Explore Our Products Gallery"
@@ -175,7 +194,7 @@ export default function ExploreProducts() {
         onKeyDown={handleKeyDown}
         className="relative w-full bg-[#07090e] focus:outline-none overflow-hidden"
         style={{
-          height: '100dvh',
+          height: '100svh', // Small viewport height: content is never occluded by iOS Safari bottom navigation bar
           minHeight: '-webkit-fill-available',
         }}
       >
@@ -183,11 +202,11 @@ export default function ExploreProducts() {
           {/* Ambient Lighting Accents (Hardware accelerated, zero blur-filter GPU lag) */}
           <div
             aria-hidden="true"
-            className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-brand-blue/15 blur-3xl pointer-events-none"
+            className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-brand-blue/15 blur-3xl pointer-events-none transform-gpu"
           />
           <div
             aria-hidden="true"
-            className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-brand-green/10 blur-3xl pointer-events-none"
+            className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-brand-green/10 blur-3xl pointer-events-none transform-gpu"
           />
         </div>
 
@@ -215,10 +234,10 @@ export default function ExploreProducts() {
           </div>
         </div>
 
-        {/* Horizontal Slide Track */}
+        {/* Horizontal Slide Track with persistent 3D GPU layer */}
         <div
           ref={trackRef}
-          className="flex flex-row flex-nowrap h-full will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
+          className="flex flex-row flex-nowrap h-full will-change-transform transform-gpu motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
           style={{ width: `${categories.length * 100}vw` }}
         >
           {categories.map((cat, idx) => (
@@ -227,7 +246,7 @@ export default function ExploreProducts() {
               role="group"
               aria-roledescription="slide"
               aria-label={`${idx + 1} of ${categories.length}: ${cat.title}`}
-              className="explore-slide relative w-screen h-full shrink-0 flex items-center justify-center px-4 sm:px-8 lg:px-14 motion-reduce:snap-start"
+              className="explore-slide relative w-screen h-full shrink-0 flex items-center justify-center px-4 sm:px-8 lg:px-14 will-change-transform transform-gpu motion-reduce:snap-start"
             >
               {/* Clean Atmospheric Blurred Layer with hardware-accelerated transform */}
               <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-25">
@@ -235,7 +254,7 @@ export default function ExploreProducts() {
                   src={cat.desktopImage || cat.image}
                   alt=""
                   aria-hidden="true"
-                  className="w-full h-full object-cover scale-110 blur-2xl transform-gpu"
+                  className="w-full h-full object-cover scale-110 blur-2xl transform-gpu will-change-transform"
                 />
                 <div className="absolute inset-0 bg-[#07090e]/70" />
               </div>
@@ -292,7 +311,7 @@ export default function ExploreProducts() {
           <div className="w-full max-w-xs sm:max-w-md h-[2px] bg-white/15 overflow-hidden rounded-full">
             <div
               ref={progressRef}
-              className="h-full bg-brand-blue origin-left"
+              className="h-full bg-brand-blue origin-left will-change-transform transform-gpu"
               style={{ transform: 'scaleX(0.08)' }}
             />
           </div>
