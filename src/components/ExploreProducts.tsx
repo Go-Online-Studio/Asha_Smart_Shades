@@ -50,6 +50,7 @@ export default function ExploreProducts() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const indexBadgeRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
   const stRef = useRef<ScrollTrigger | null>(null);
@@ -72,8 +73,10 @@ export default function ExploreProducts() {
 
     // Keep ScrollTrigger's pin spacer within the gallery wrapper during cleanup.
     const ctx = gsap.context(() => {
+      // Calculate exact distance: total slides minus 1, times the section's rendered width
       const getScrollDistance = () => {
-        return Math.max(0, track.scrollWidth - section.clientWidth);
+        const vw = section.clientWidth || window.innerWidth;
+        return (totalSlides - 1) * vw;
       };
 
       const horizontalTween = gsap.to(track, {
@@ -85,18 +88,27 @@ export default function ExploreProducts() {
           scrub: 0.5,
           start: 'top top',
           end: () => `+=${getScrollDistance()}`,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
+          // anticipatePin: 0 prevents the premature jump/glitch when scrolling into the section
+          anticipatePin: 0,
+          fastScrollEnd: true,
+          preventOverlaps: true,
           onUpdate: (self) => {
+            // Update progress bar directly via DOM transform (zero React latency)
             if (progressRef.current) {
               progressRef.current.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
             }
+
             const currentIdx = Math.min(
               totalSlides - 1,
               Math.max(0, Math.round(self.progress * (totalSlides - 1)))
             );
+
             if (currentIdx !== activeIndexRef.current) {
               activeIndexRef.current = currentIdx;
+              if (indexBadgeRef.current) {
+                indexBadgeRef.current.textContent = `0${currentIdx + 1} / 0${totalSlides}`;
+              }
               setActiveIndex(currentIdx);
             }
           },
@@ -111,13 +123,8 @@ export default function ExploreProducts() {
       ScrollTrigger.refresh();
     });
 
-    // Refresh again after fonts and images finish loading
+    // Refresh after fonts and images finish loading
     const cleanupAssets = refreshAfterAssetsLoaded(section);
-
-    // Delayed refresh to handle mobile browser address bar / initial viewport settling
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 300);
 
     const handleResize = debounce(() => {
       ScrollTrigger.refresh();
@@ -128,7 +135,6 @@ export default function ExploreProducts() {
 
     return () => {
       cancelAnimationFrame(refreshId);
-      clearTimeout(timer);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       handleResize.cancel();
@@ -167,25 +173,42 @@ export default function ExploreProducts() {
         aria-label="Explore Our Products Gallery"
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="relative w-full h-screen bg-[#07090e] focus:outline-none"
-        style={{ height: '100svh' }}
+        className="relative w-full bg-[#07090e] focus:outline-none overflow-hidden"
+        style={{
+          height: '100dvh',
+          minHeight: '-webkit-fill-available',
+        }}
       >
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Ambient Lighting Accents (Hardware accelerated, zero blur-filter GPU lag) */}
+          <div
+            aria-hidden="true"
+            className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-brand-blue/15 blur-3xl pointer-events-none"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-brand-green/10 blur-3xl pointer-events-none"
+          />
+        </div>
+
         {/* Fixed/Anchored Corner Title badge */}
-        <div className="pointer-events-none absolute top-20 sm:top-24 left-4 sm:left-10 lg:left-14 z-30">
-          <div className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-2xl inline-flex items-center gap-3 sm:gap-4">
-            <h2 className="text-[11px] sm:text-xs md:text-sm font-serif text-white uppercase tracking-[0.2em]">
+        <div className="pointer-events-none absolute top-16 sm:top-20 md:top-24 left-4 sm:left-10 lg:left-14 z-30">
+          <div className="px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/15 shadow-2xl inline-flex items-center gap-2.5 sm:gap-4">
+            <h2 className="text-[10px] sm:text-xs md:text-sm font-serif text-white uppercase tracking-[0.2em]">
               Explore Our Products
             </h2>
             <span aria-hidden="true" className="text-white/30">·</span>
-            <span className="text-[11px] sm:text-xs font-sans text-brand-green tabular-nums tracking-widest font-semibold">
+            <span
+              ref={indexBadgeRef}
+              className="text-[10px] sm:text-xs font-sans text-brand-green tabular-nums tracking-widest font-semibold"
+            >
               0{activeIndex + 1} / 0{categories.length}
             </span>
           </div>
         </div>
 
         {/* Top-Right Scroll Indicator */}
-        <div className="pointer-events-none absolute top-20 sm:top-24 right-4 sm:right-10 lg:right-14 z-30 hidden md:flex items-center gap-3">
+        <div className="pointer-events-none absolute top-16 sm:top-20 md:top-24 right-4 sm:right-10 lg:right-14 z-30 hidden md:flex items-center gap-3">
           <div className="px-4 py-2 rounded-full bg-[#0b0d13]/80 backdrop-blur-2xl border border-white/15 flex items-center gap-2.5 text-xs text-white/80 tracking-wider">
             <MoveHorizontal className="w-4 h-4 text-brand-green" />
             <span>Scroll to Explore</span>
@@ -195,7 +218,8 @@ export default function ExploreProducts() {
         {/* Horizontal Slide Track */}
         <div
           ref={trackRef}
-          className="flex flex-row flex-nowrap h-full w-max will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
+          className="flex flex-row flex-nowrap h-full will-change-transform motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:snap-x motion-reduce:snap-mandatory"
+          style={{ width: `${categories.length * 100}vw` }}
         >
           {categories.map((cat, idx) => (
             <div
@@ -205,19 +229,19 @@ export default function ExploreProducts() {
               aria-label={`${idx + 1} of ${categories.length}: ${cat.title}`}
               className="explore-slide relative w-screen h-full shrink-0 flex items-center justify-center px-4 sm:px-8 lg:px-14 motion-reduce:snap-start"
             >
-              {/* Atmospheric Blurred Background Layer */}
-              <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
+              {/* Clean Atmospheric Blurred Layer with hardware-accelerated transform */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-25">
                 <img
                   src={cat.desktopImage || cat.image}
                   alt=""
                   aria-hidden="true"
-                  className="w-full h-full object-cover scale-125 blur-[70px]"
+                  className="w-full h-full object-cover scale-110 blur-2xl transform-gpu"
                 />
-                <div className="absolute inset-0 bg-[#07090e]/60" />
+                <div className="absolute inset-0 bg-[#07090e]/70" />
               </div>
 
-              {/* Large Full-Viewport Showcase Stage */}
-              <div className="relative z-10 w-full max-w-7xl h-[68vh] sm:h-[74vh] flex items-end">
+              {/* Large Responsive Showcase Stage (Uses % height so it fits seamlessly in dynamic viewports) */}
+              <div className="relative z-10 w-full max-w-7xl h-[66%] sm:h-[72%] max-h-[720px] flex items-end">
                 {/* Showcase Image Frame */}
                 <div className="relative w-full h-full rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] overflow-hidden border border-white/15 shadow-[0_35px_100px_rgba(0,0,0,0.85)]">
                   <picture className="block w-full h-full">
@@ -236,24 +260,24 @@ export default function ExploreProducts() {
                 </div>
 
                 {/* Compact Glass Title & Nav CTA Badge at Bottom-Left */}
-                <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 z-20 max-w-md w-[calc(100%-2rem)] sm:w-auto">
-                  <div className="p-4 sm:p-6 rounded-2xl bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-8">
+                <div className="absolute bottom-3 sm:bottom-6 md:bottom-8 left-3 sm:left-6 md:left-8 z-20 max-w-md w-[calc(100%-1.5rem)] sm:w-auto">
+                  <div className="p-3.5 sm:p-5 md:p-6 rounded-2xl bg-[#0b0d13]/90 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 md:gap-8">
                     <div>
-                      <span className="block text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-1 font-semibold">
+                      <span className="block text-[9px] sm:text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-1 font-semibold">
                         0{idx + 1} · Architectural System
                       </span>
-                      <h3 className="text-lg sm:text-2xl md:text-3xl font-serif text-white leading-tight">
+                      <h3 className="text-base sm:text-xl md:text-3xl font-serif text-white leading-tight">
                         {cat.title}
                       </h3>
                     </div>
 
                     <Link
                       to={cat.link}
-                      className="group inline-flex items-center justify-between gap-3 pl-4 sm:pl-5 pr-2 py-1.5 sm:py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95"
+                      className="group inline-flex items-center justify-between gap-2.5 sm:gap-3 pl-3.5 sm:pl-5 pr-1.5 sm:pr-2 py-1.5 sm:py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-[11px] sm:text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95"
                     >
                       <span>Explore</span>
-                      <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 group-hover:bg-brand-blue group-hover:text-white flex items-center justify-center transition-colors">
-                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      <span className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-white/20 group-hover:bg-brand-blue group-hover:text-white flex items-center justify-center transition-colors">
+                        <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       </span>
                     </Link>
                   </div>
@@ -264,7 +288,7 @@ export default function ExploreProducts() {
         </div>
 
         {/* Bottom Progress Bar & Quick Pill Slide Navigation */}
-        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-10 lg:left-14 right-4 sm:right-10 lg:right-14 z-30 flex items-center justify-between gap-4 sm:gap-6 pointer-events-none">
+        <div className="absolute bottom-3 sm:bottom-5 md:bottom-6 left-4 sm:left-10 lg:left-14 right-4 sm:right-10 lg:right-14 z-30 flex items-center justify-between gap-3 sm:gap-6 pointer-events-none">
           <div className="w-full max-w-xs sm:max-w-md h-[2px] bg-white/15 overflow-hidden rounded-full">
             <div
               ref={progressRef}
@@ -282,13 +306,12 @@ export default function ExploreProducts() {
                 aria-label={`Go to ${cat.title}`}
                 className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                   activeIndex === idx
-                    ? 'w-7 sm:w-10 bg-brand-blue'
+                    ? 'w-6 sm:w-10 bg-brand-blue'
                     : 'w-2 sm:w-2.5 bg-white/30 hover:bg-white/60'
                 }`}
               />
             ))}
           </div>
-        </div>
         </div>
       </section>
     </div>
