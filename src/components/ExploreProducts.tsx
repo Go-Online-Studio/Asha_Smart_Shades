@@ -96,6 +96,15 @@ export default function ExploreProducts() {
           return Math.max(0, track.scrollWidth - section.offsetWidth);
         };
 
+        // Touch devices have native physical momentum. Adding an artificial
+        // 0.5s scrub lag on mobile causes the animation to lag behind the finger,
+        // which creates an unpinning collision and visual glitch when scrolling past the pin.
+        // On touch screens, scrub: true keeps it 1:1 with native scroll momentum.
+        const isTouchDevice =
+          ScrollTrigger.isTouch === 1 ||
+          (typeof window !== 'undefined' &&
+            ('ontouchstart' in window || navigator.maxTouchPoints > 0));
+
         const horizontalTween = gsap.to(track, {
           x: () => -getScrollDistance(),
           ease: 'none',
@@ -103,7 +112,7 @@ export default function ExploreProducts() {
           scrollTrigger: {
             trigger: section,
             pin: true,
-            scrub: 0.5,
+            scrub: isTouchDevice ? true : 0.5,
             start: 'top top',
             end: () => `+=${getScrollDistance()}`,
             invalidateOnRefresh: true, // Recalculates on iPhone rotation and window resize
@@ -271,7 +280,8 @@ export default function ExploreProducts() {
                     <img
                       src={cat.desktopImage || cat.image}
                       alt={cat.title}
-                      loading="lazy"
+                      loading="eager"
+                      decoding="async"
                       className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   </picture>

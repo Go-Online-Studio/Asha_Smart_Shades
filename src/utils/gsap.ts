@@ -8,11 +8,11 @@ import { SplitText } from 'gsap/SplitText';
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin, SplitText);
 
-  // Configure ScrollTrigger: allow auto-refresh on DOM/layout changes so
-  // pinned sections on mobile (iOS/Android) accurately compute coordinates
-  // even after dynamic address bar collapse, font rendering, and asset loading.
+  // Configure ScrollTrigger: ignore mobile address bar vertical resize events.
+  // This prevents ScrollTrigger from recalculating pin-spacers and unpinning mid-scroll
+  // when the mobile address bar expands/contracts, eliminating unpin glitches.
   ScrollTrigger.config({
-    autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load,resize',
+    ignoreMobileResize: true,
   });
 }
 
