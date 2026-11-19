@@ -11,44 +11,42 @@ export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const mainFrameRef = useRef<HTMLDivElement>(null);
   const mainImgRef = useRef<HTMLImageElement>(null);
-  const lensFrameRef = useRef<HTMLDivElement>(null);
   const glassCardRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
     const mainFrame = mainFrameRef.current;
     const mainImg = mainImgRef.current;
-    const lensFrame = lensFrameRef.current;
     const glassCard = glassCardRef.current;
     if (!section || !mainFrame || !mainImg || prefersReducedMotion()) return;
 
     const cleanupAssets = refreshAfterAssetsLoaded(section);
 
     const ctx = gsap.context(() => {
-      // Main sculpted frame entrance
+      // Main sculpted frame smooth reveal
       gsap.fromTo(
         mainFrame,
-        { clipPath: 'inset(12% 10% 12% 10% round 48px)', opacity: 0.2 },
+        { clipPath: 'inset(6% 4% 6% 4% round 32px)', opacity: 0.4 },
         {
-          clipPath: 'inset(0% 0% 0% 0% round 48px)',
+          clipPath: 'inset(0% 0% 0% 0% round 32px)',
           opacity: 1,
-          duration: 1.2,
+          duration: 1.1,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: mainFrame,
-            start: 'top 84%',
+            start: 'top 85%',
             once: true,
           },
         }
       );
 
-      // Inner image parallax
+      // Inner image subtle parallax
       gsap.fromTo(
         mainImg,
-        { scale: 1.16, yPercent: -8 },
+        { scale: 1.08, yPercent: -4 },
         {
-          scale: 1.02,
-          yPercent: 8,
+          scale: 1.01,
+          yPercent: 4,
           ease: 'none',
           scrollTrigger: {
             trigger: section,
@@ -59,38 +57,19 @@ export default function AboutSection() {
         }
       );
 
-      // Secondary overlapping lens counter-parallax
-      if (lensFrame) {
-        gsap.fromTo(
-          lensFrame,
-          { y: 70, rotate: -3 },
-          {
-            y: -50,
-            rotate: 2,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.5,
-            },
-          }
-        );
-      }
-
-      // Overlapping bottom-left glass card parallax
+      // Compact architectural overlay badge entrance
       if (glassCard) {
         gsap.fromTo(
           glassCard,
-          { y: 60, opacity: 0 },
+          { y: 35, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.95,
+            duration: 0.85,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: glassCard,
-              start: 'top 88%',
+              trigger: mainFrame,
+              start: 'top 75%',
               once: true,
             },
           }
@@ -107,81 +86,77 @@ export default function AboutSection() {
   return (
     <section
       ref={sectionRef}
-      className="py-16 sm:py-24 md:py-36 relative overflow-hidden bg-brand-light"
+      className="py-16 sm:py-24 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#07090e] via-[#090d14] to-[#0b110f] text-white"
     >
-      {/* Subtle Architectural Blueprint Grid */}
+      {/* Seamless Hero Connector Ambient Lighting */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 opacity-60 [background-image:linear-gradient(to_right,rgba(26,26,26,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(26,26,26,0.04)_1px,transparent_1px)] [background-size:5rem_5rem]"
+        className="pointer-events-none absolute -top-40 right-1/4 w-[36rem] h-[36rem] rounded-full bg-brand-blue/10 blur-[150px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-10 w-[28rem] h-[28rem] rounded-full bg-brand-green/8 blur-[140px]"
+      />
+
+      {/* Subtle Dark Architectural Blueprint Grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 opacity-40 [background-image:linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:5rem_5rem]"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Asymmetric Overlapping Editorial Heading */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-end mb-8 lg:mb-0">
-          <div className="lg:col-span-8 relative z-20">
-            <div className="inline-flex items-center gap-2.5 text-xs font-sans uppercase tracking-[0.22em] text-brand-blue mb-3">
-              <span>01</span>
-              <span aria-hidden="true">·</span>
-              <span>Architectural Identity</span>
-            </div>
-            <AnimatedHeading
-              as="h2"
-              className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-brand-charcoal tracking-tight leading-[1.12]"
-            >
-              Discover Bespoke{' '}
-              <span className="text-brand-blue italic block sm:inline lg:pl-16">
-                Architectural Shading
-              </span>
-            </AnimatedHeading>
+        <div className="max-w-3xl mb-6 sm:mb-12 lg:mb-14">
+          <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-sans uppercase tracking-[0.22em] text-brand-blue mb-2.5 font-semibold">
+            <span>01</span>
+            <span aria-hidden="true">·</span>
+            <span>Architectural Identity</span>
           </div>
+          <AnimatedHeading
+            as="h2"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-serif text-white tracking-tight leading-[1.15]"
+          >
+            Discover Bespoke{' '}
+            <span className="text-brand-blue italic block sm:inline lg:pl-6">
+              Architectural Shading
+            </span>
+          </AnimatedHeading>
         </div>
 
-        {/* Multi-Plane Overlapping Image & Glass Card Collage */}
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-0 items-center lg:-mt-8">
-          {/* Left Overlapping Detail Lens + Glass Manifesto Card (Cols 1-6, Row 1) */}
-          <div className="lg:col-start-1 lg:col-end-7 lg:row-start-1 relative z-30 flex flex-col gap-6 order-2 lg:order-1 lg:mt-20">
-            {/* Secondary Zoomed Detail Lens Frame (Overlaps Main Image on Desktop) */}
-            <div
-              ref={lensFrameRef}
-              className="hidden lg:block w-56 h-72 self-end lg:-mr-8 rounded-t-full rounded-b-3xl overflow-hidden border-4 border-brand-light shadow-2xl will-change-transform"
-            >
+        {/* Large-Scale Image-Led Architectural Showcase Frame */}
+        <div className="relative w-full">
+          <div
+            ref={mainFrameRef}
+            className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] overflow-hidden rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.65)] will-change-transform"
+          >
+            <picture className="block w-full h-full">
+              <source media="(max-width: 768px)" srcSet={aboutSectionImage.mobileImage} />
               <img
+                ref={mainImgRef}
                 src={aboutSectionImage.desktopImage}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover object-right scale-250"
+                alt="Bespoke Architectural Shading Installation"
+                className="w-full h-full object-cover will-change-transform"
               />
-            </div>
+            </picture>
 
-            {/* Overlapping Glassmorphic Editorial Statement */}
-            <div
-              ref={glassCardRef}
-              className="glass-panel bg-white/90 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-12 border border-brand-charcoal/10 shadow-[0_24px_60px_-15px_rgba(11,3,1,0.14)]"
-            >
-              <div className="w-12 h-[2px] bg-brand-blue mb-4 sm:mb-6" />
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-brand-charcoal leading-snug">
-                High-performance tension systems engineered for luxury and commercial spaces.
-              </h3>
-            </div>
+            {/* Subtle localized contrast gradient — desktop only so mobile photo remains 100% clean */}
+            <div className="hidden sm:block pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent" />
           </div>
 
-          {/* Right Sculpted Arch-Chamfer Main Image Frame (Cols 5-13, Row 1) — 4:3 mobile, 16:10 desktop */}
-          <div className="lg:col-start-5 lg:col-end-13 lg:row-start-1 relative z-10 order-1 lg:order-2">
-            <div
-              ref={mainFrameRef}
-              className="relative aspect-[4/3] md:aspect-[16/10] w-full overflow-hidden rounded-2xl sm:rounded-tl-[4.5rem] sm:rounded-br-[4.5rem] sm:rounded-tr-2xl sm:rounded-bl-2xl shadow-[0_30px_80px_-20px_rgba(11,3,1,0.22)] will-change-transform"
-            >
-              <picture className="block w-full h-full">
-                <source media="(max-width: 768px)" srcSet={aboutSectionImage.mobileImage} />
-                <img
-                  ref={mainImgRef}
-                  src={aboutSectionImage.desktopImage}
-                  alt="Alba Butterfly Pergola"
-                  className="w-full h-full object-cover will-change-transform"
-                />
-              </picture>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-transparent" />
+          {/* Architectural Caption Badge: Cleanly BELOW image on mobile, floating overlay on desktop */}
+          <div
+            ref={glassCardRef}
+            className="mt-2.5 sm:mt-0 sm:absolute sm:bottom-8 sm:left-8 z-20 w-full sm:max-w-md p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-[#090d14]/90 sm:bg-[#07090e]/80 backdrop-blur-xl border border-white/15 shadow-xl sm:shadow-2xl text-white will-change-transform"
+          >
+            <div className="flex items-center gap-2 mb-1 sm:mb-2">
+              <div className="w-4 sm:w-5 h-[2px] bg-brand-blue" />
+              <span className="text-[9px] sm:text-xs font-sans uppercase tracking-[0.2em] text-brand-blue font-semibold">
+                Commercial Engineering
+              </span>
             </div>
+            <h3 className="text-[11px] sm:text-sm md:text-base font-serif text-white/90 leading-snug">
+              High-performance tension systems engineered for luxury and commercial spaces.
+            </h3>
           </div>
         </div>
       </div>

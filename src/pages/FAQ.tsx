@@ -53,28 +53,47 @@ export default function FAQ() {
 
       <FAQComponent hideTitle />
 
-      {/* Bottom CTA Banner */}
+      {/* Bottom CTA Banner with Non-Obscuring Mobile Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[440px] rounded-3xl overflow-hidden relative bg-brand-charcoal shadow-2xl">
-          <picture className="block w-full h-full">
-            <source media="(max-width: 768px)" srcSet={faqImages.cta.mobileImage} />
-            <img
-              src={faqImages.cta.desktopImage}
-              alt="Customer service"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover opacity-65"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-brand-charcoal/60 to-transparent flex flex-col items-start justify-center p-8 sm:p-12 md:p-16">
-            <AnimatedHeading
-              as="h3"
-              className="text-white text-2xl sm:text-3xl md:text-4xl font-serif mb-6"
-            >
+        <div className="relative w-full">
+          {/* Image Frame — 100% visible on mobile without text overlay */}
+          <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden relative bg-brand-charcoal shadow-2xl">
+            <picture className="block w-full h-full">
+              <source media="(max-width: 768px)" srcSet={faqImages.cta.mobileImage} />
+              <img
+                src={faqImages.cta.desktopImage}
+                alt="Customer service"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover opacity-65"
+              />
+            </picture>
+            <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-brand-charcoal/60 to-transparent" />
+          </div>
+
+          {/* Desktop Overlay Content */}
+          <div className="hidden sm:flex absolute inset-0 flex-col items-start justify-center p-8 sm:p-12 md:p-16 pointer-events-none">
+            <div className="pointer-events-auto">
+              <AnimatedHeading
+                as="h3"
+                className="text-white text-2xl sm:text-3xl md:text-4xl font-serif mb-6"
+              >
+                Still have questions?
+              </AnimatedHeading>
+              <MagneticButton to="/contact" variant="primary">
+                <span>Reach Out To Us</span>
+                <ArrowRight className="w-4 h-4" />
+              </MagneticButton>
+            </div>
+          </div>
+
+          {/* Mobile Clean Content Card */}
+          <div className="sm:hidden mt-3 p-3.5 rounded-xl bg-[#0e121a] border border-white/15 shadow-xl text-white">
+            <h3 className="text-sm font-serif text-white mb-2.5 leading-snug">
               Still have questions?
-            </AnimatedHeading>
+            </h3>
             <MagneticButton to="/contact" variant="primary">
-              <span>Reach Out To Us</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-[11px] font-semibold">Reach Out To Us</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </MagneticButton>
           </div>
         </div>

@@ -97,7 +97,7 @@ export default function Hero() {
                     className="w-full h-full object-cover object-center"
                   />
                 </picture>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-[#07090e]" />
               </div>
             </SwiperSlide>
           ))}

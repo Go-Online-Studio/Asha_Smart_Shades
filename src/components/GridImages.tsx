@@ -166,12 +166,12 @@ export default function GridImages() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between gap-2">
-                <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs uppercase tracking-[0.16em] text-white/90 tabular-nums truncate">
+              <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between gap-2">
+                <span className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[9px] sm:text-xs uppercase tracking-wider text-white/90 tabular-nums truncate">
                   01 / 04 · Architectural Lookbook
                 </span>
-                <span className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
-                  <Maximize2 className="w-4 h-4" />
+                <span className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
+                  <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </span>
               </div>
             </a>
@@ -192,12 +192,12 @@ export default function GridImages() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between gap-2">
-                <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs uppercase tracking-[0.16em] text-white/90 tabular-nums truncate">
+              <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between gap-2">
+                <span className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[9px] sm:text-xs uppercase tracking-wider text-white/90 tabular-nums truncate">
                   02 / 04 · Precision Canopy
                 </span>
-                <span className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
-                  <Maximize2 className="w-4 h-4" />
+                <span className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
+                  <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </span>
               </div>
             </a>
@@ -218,12 +218,12 @@ export default function GridImages() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between gap-2">
-                <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs uppercase tracking-[0.16em] text-white/90 tabular-nums truncate">
+              <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between gap-2">
+                <span className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[9px] sm:text-xs uppercase tracking-wider text-white/90 tabular-nums truncate">
                   03 / 04 · Exterior Living
                 </span>
-                <span className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
-                  <Maximize2 className="w-4 h-4" />
+                <span className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
+                  <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </span>
               </div>
             </a>
@@ -244,12 +244,12 @@ export default function GridImages() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between gap-2">
-                <span className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs uppercase tracking-[0.16em] text-white/90 tabular-nums truncate">
+              <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6 flex items-center justify-between gap-2">
+                <span className="px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-[9px] sm:text-xs uppercase tracking-wider text-white/90 tabular-nums truncate">
                   04 / 04 · Tension Architecture
                 </span>
-                <span className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
-                  <Maximize2 className="w-4 h-4" />
+                <span className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-brand-blue transition-colors shrink-0">
+                  <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </span>
               </div>
             </a>

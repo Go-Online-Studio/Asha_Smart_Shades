@@ -405,13 +405,13 @@ export default function ProductPage() {
                 <div className="absolute top-5 left-5 text-xs text-white/75 tracking-widest tabular-nums">
                   0{idx + 1}
                 </div>
-                <div className="absolute bottom-5 left-5 right-5 flex flex-col text-white z-10">
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-serif mb-1.5 group-hover:text-brand-blue transition-colors duration-300">
+                <div className="absolute bottom-3.5 left-3.5 right-3.5 sm:bottom-5 sm:left-5 sm:right-5 flex flex-col text-white z-10">
+                  <h3 className="text-base sm:text-xl lg:text-2xl font-serif mb-1 group-hover:text-brand-blue transition-colors duration-300">
                     {item.title}
                   </h3>
-                  <div className="flex items-center text-brand-green font-medium tracking-widest text-xs uppercase">
+                  <div className="flex items-center text-brand-green font-medium tracking-widest text-[11px] sm:text-xs uppercase">
                     <span>View Details</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform duration-300" />
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 group-hover:translate-x-1.5 transition-transform duration-300" />
                   </div>
                 </div>
               </Link>
@@ -424,25 +424,44 @@ export default function ProductPage() {
 
       {/* Final Full-width visual with Dual Desktop/Mobile Picture Support */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24">
-        <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[520px] rounded-2xl sm:rounded-tl-[4.5rem] sm:rounded-br-[4.5rem] sm:rounded-tr-2xl sm:rounded-bl-2xl overflow-hidden relative shadow-2xl">
-          <picture className="block w-full h-full">
-            <source media="(max-width: 768px)" srcSet={productCtaBanner.mobileImage} />
-            <img
-              src={productCtaBanner.desktopImage}
-              alt={product.title}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 object-bottom"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-brand-charcoal/55 to-transparent flex flex-col items-start justify-center p-6 sm:p-14 md:p-20">
-            <AnimatedHeading
-              as="h2"
-              className="text-white text-2xl sm:text-5xl md:text-6xl font-serif mb-6 sm:mb-8 max-w-xl"
-            >
+        <div className="relative w-full">
+          {/* Image Frame — 100% visible on mobile without text covering it */}
+          <div className="w-full aspect-[4/3] md:aspect-[16/9] max-h-[520px] rounded-2xl sm:rounded-tl-[4.5rem] sm:rounded-br-[4.5rem] sm:rounded-tr-2xl sm:rounded-bl-2xl overflow-hidden relative shadow-2xl">
+            <picture className="block w-full h-full">
+              <source media="(max-width: 768px)" srcSet={productCtaBanner.mobileImage} />
+              <img
+                src={productCtaBanner.desktopImage}
+                alt={product.title}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 object-bottom"
+              />
+            </picture>
+            <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-brand-charcoal/55 to-transparent" />
+          </div>
+
+          {/* Desktop Overlay Content */}
+          <div className="hidden sm:flex absolute inset-0 flex-col items-start justify-center p-6 sm:p-14 md:p-20 pointer-events-none">
+            <div className="pointer-events-auto">
+              <AnimatedHeading
+                as="h2"
+                className="text-white text-2xl sm:text-5xl md:text-6xl font-serif mb-6 sm:mb-8 max-w-xl"
+              >
+                Ready to transform your space?
+              </AnimatedHeading>
+              <MagneticButton to="/contact" variant="primary">
+                <span>Start Your Project</span>
+                <ArrowRight className="w-4 h-4" />
+              </MagneticButton>
+            </div>
+          </div>
+
+          {/* Mobile Clean Content Card */}
+          <div className="sm:hidden mt-3 p-3.5 rounded-xl bg-[#0e121a] border border-white/15 shadow-xl text-white">
+            <h2 className="text-sm font-serif text-white mb-2.5 leading-snug">
               Ready to transform your space?
-            </AnimatedHeading>
+            </h2>
             <MagneticButton to="/contact" variant="primary">
-              <span>Start Your Project</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-[11px] font-semibold">Start Your Project</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </MagneticButton>
           </div>
         </div>

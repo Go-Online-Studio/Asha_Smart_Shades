@@ -57,32 +57,33 @@ export default function Projects() {
 
       gsap.fromTo(
         '.project-diagonal-card-1',
-        { y: 50, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          ease: 'none',
+          ease: 'power3.out',
+          duration: 0.9,
           scrollTrigger: {
             trigger: '.project-diagonal-card-1',
-            start: 'top 85%',
-            end: 'top 55%',
-            scrub: 0.5,
+            start: 'top 88%',
+            once: true,
           },
         }
       );
 
       gsap.fromTo(
         '.project-diagonal-card-2',
-        { y: 50, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          ease: 'none',
+          ease: 'power3.out',
+          duration: 0.9,
+          delay: 0.1,
           scrollTrigger: {
             trigger: '.project-diagonal-card-2',
-            start: 'top 95%',
-            end: 'bottom 80%',
-            scrub: 0.5,
+            start: 'top 88%',
+            once: true,
           },
         }
       );
@@ -95,55 +96,69 @@ export default function Projects() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full bg-brand-light pt-8 pb-16 sm:py-24 md:py-28 overflow-hidden">
+    <section ref={sectionRef} className="relative w-full bg-[#07090e] pt-6 pb-16 sm:py-20 md:py-24 overflow-hidden">
       {/* Expanding Scroll-Scrubbed Portal Container with Dual Desktop/Mobile Picture Support */}
-      <div
-        ref={portalRef}
-        className="relative w-full min-h-[75vh] sm:min-h-[85vh] flex flex-col justify-between py-14 sm:py-20 md:py-28 overflow-hidden will-change-transform"
-      >
-        <picture className="block absolute inset-0 w-full h-full">
-          <source media="(max-width: 768px)" srcSet={projectsPortalImage.mobileImage} />
-          <img
-            ref={bgImgRef}
-            src={projectsPortalImage.desktopImage}
-            alt="Advanced Tensile Membranes & Canopies"
-            className="w-full h-full object-cover will-change-transform"
-          />
-        </picture>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/40 to-brand-dark/90" />
+      <div className="relative w-full">
+        <div
+          ref={portalRef}
+          className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:min-h-[85vh] md:aspect-auto flex flex-col justify-end overflow-hidden will-change-transform rounded-2xl sm:rounded-3xl md:rounded-none"
+        >
+          <picture className="block absolute inset-0 w-full h-full">
+            <source media="(max-width: 768px)" srcSet={projectsPortalImage.mobileImage} />
+            <img
+              ref={bgImgRef}
+              src={projectsPortalImage.desktopImage}
+              alt="Advanced Tensile Membranes & Canopies"
+              className="w-full h-full object-cover will-change-transform"
+            />
+          </picture>
+          {/* Subtle cinematic gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/25" />
+        </div>
 
-        {/* Diagonal Overlapping Asymmetric Cards */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start">
-            {/* Top-Left Card (Cols 1-6) */}
-            <div className="lg:col-span-6 project-diagonal-card-1 rounded-2xl sm:rounded-tl-[3.5rem] sm:rounded-br-[3.5rem] sm:rounded-tr-xl sm:rounded-bl-xl bg-[#0b0d13]/80 backdrop-blur-2xl border border-white/15 p-6 sm:p-10 md:p-12 text-white shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
-              <span className="inline-block text-xs font-sans uppercase tracking-[0.22em] text-brand-green mb-3">
-                01 · Structural Tension
-              </span>
+        {/* Editorial Cards Overlay:
+            On mobile (< md): sits cleanly BELOW the portal image so the villa & tensile canopy are 100% visible!
+            On desktop (md+): Card 1 floats at TOP-LEFT in the open sky (never obscuring the main lower awning),
+            while Card 2 floats at BOTTOM-RIGHT over the lower terrace wall. */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-3 sm:mt-4 md:mt-0 md:absolute md:inset-0 md:pointer-events-none">
+          {/* Card 01 · Structural Tension — Desktop Top-Left in the open sky / Mobile stacked */}
+          <div className="project-diagonal-card-1 md:absolute md:top-8 lg:top-12 md:left-4 sm:md:left-6 lg:md:left-8 md:max-w-sm lg:max-w-md will-change-transform md:pointer-events-auto">
+            <div className="rounded-xl sm:rounded-2xl bg-[#0b0d13]/90 md:bg-[#07090e]/75 backdrop-blur-xl border border-white/15 p-3.5 sm:p-5 md:p-6 text-white shadow-xl sm:shadow-[0_24px_60px_rgba(0,0,0,0.7)]">
+              <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                <div className="w-5 h-[2px] bg-brand-green" />
+                <span className="text-[9px] sm:text-xs font-sans font-semibold uppercase tracking-[0.22em] text-brand-green">
+                  01 · Structural Tension
+                </span>
+              </div>
               <AnimatedHeading
                 as="h2"
-                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.15] text-white"
+                className="text-sm sm:text-xl md:text-2xl font-serif mb-1 sm:mb-2 leading-snug text-white"
               >
                 Advanced Tensile Membranes &amp; Canopies
               </AnimatedHeading>
-              <p className="text-white/85 text-xs sm:text-sm md:text-base leading-relaxed">
-                <strong>Innovation, precision engineering, crafted in Vadodara</strong> and a commitment to architectural excellence are the elements that distinguish our bespoke shading systems, engineered for luxury and highly durable performance.
+              <p className="text-white/80 text-[11px] sm:text-[13px] leading-relaxed">
+                Precision-engineered tensile membranes crafted in Vadodara, delivering high durability and architectural distinction for luxury spaces.
               </p>
             </div>
+          </div>
 
-            {/* Bottom-Right Offset Card (Cols 7-12, pushed down asymmetrically) */}
-            <div className="lg:col-span-6 lg:mt-40 project-diagonal-card-2 rounded-2xl sm:rounded-tr-[3.5rem] sm:rounded-bl-[3.5rem] sm:rounded-tl-xl sm:rounded-br-xl bg-[#0b0d13]/85 backdrop-blur-2xl border border-white/20 p-6 sm:p-10 md:p-12 text-white shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
-              <span className="inline-block text-xs font-sans uppercase tracking-[0.22em] text-brand-blue mb-3">
-                02 · Spatial Extension
-              </span>
+          {/* Card 02 · Spatial Extension — Desktop Bottom-Right below the awning overhang / Mobile stacked */}
+          <div className="project-diagonal-card-2 mt-2.5 sm:mt-3 md:mt-0 md:absolute md:bottom-8 lg:bottom-12 md:right-4 sm:md:right-6 lg:md:right-8 md:max-w-sm lg:max-w-md will-change-transform md:pointer-events-auto">
+            <div className="rounded-xl sm:rounded-2xl bg-[#0b0d13]/90 md:bg-[#07090e]/75 backdrop-blur-xl border border-white/15 p-3.5 sm:p-5 md:p-6 text-white shadow-xl sm:shadow-[0_24px_60px_rgba(0,0,0,0.7)] lg:mb-2">
+              <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                <div className="w-5 h-[2px] bg-brand-blue" />
+                <span className="text-[9px] sm:text-xs font-sans font-semibold uppercase tracking-[0.22em] text-brand-blue">
+                  02 · Spatial Extension
+                </span>
+              </div>
               <AnimatedHeading
                 as="h2"
-                className="text-2xl sm:text-4xl md:text-5xl font-serif mb-4 sm:mb-6 leading-[1.15] text-white"
+                className="text-sm sm:text-xl md:text-2xl font-serif mb-1 sm:mb-2 leading-snug text-white"
               >
-                The outdoors as a living space
+                The Outdoors as a Living Space
               </AnimatedHeading>
-              <p className="text-white/85 text-xs sm:text-sm md:text-base leading-relaxed">
-                Asha Smart Shades specializes in large-span shading solutions, tailored for commercial projects, luxury residences, and industrial estates across Gujarat and India, ensuring your outdoor spaces can be enjoyed all year round.
+              <p className="text-white/80 text-[11px] sm:text-[13px] leading-relaxed">
+                Large-span bespoke shading systems tailored for luxury residences, commercial estates, and resorts across Gujarat and India.
               </p>
             </div>
           </div>
@@ -151,19 +166,19 @@ export default function Projects() {
       </div>
 
       {/* Overlapping Floating Consultation Capsule Banner */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-8 sm:-mt-12 md:-mt-16">
-        <div className="rounded-2xl sm:rounded-3xl bg-[#0b0d13] text-white p-6 sm:p-10 md:p-14 border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.45)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-4 sm:mt-8 md:-mt-12">
+        <div className="rounded-2xl sm:rounded-3xl bg-[#0e121a] text-white p-4 sm:p-8 md:p-10 border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-8">
           <AnimatedHeading
             as="h3"
-            className="text-xl sm:text-3xl md:text-4xl font-serif max-w-xl leading-[1.15] text-white"
+            className="text-base sm:text-2xl md:text-3xl font-serif max-w-xl leading-[1.25] text-white"
           >
             Ready to design your bespoke architectural shading system?
           </AnimatedHeading>
 
           <div className="shrink-0 w-full sm:w-auto">
             <MagneticButton to="/contact" variant="primary" className="w-full sm:w-auto">
-              <span>Book Consultation</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-[11px] sm:text-sm">Book Consultation</span>
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </MagneticButton>
           </div>
         </div>

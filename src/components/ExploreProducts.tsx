@@ -289,20 +289,20 @@ export default function ExploreProducts() {
                 </div>
 
                 {/* Compact Glass Title & Nav CTA Badge at Bottom-Left */}
-                <div className="absolute bottom-3 sm:bottom-6 md:bottom-8 left-3 sm:left-6 md:left-8 z-20 max-w-md w-[calc(100%-1.5rem)] sm:w-auto">
-                  <div className="p-3.5 sm:p-5 md:p-6 rounded-2xl bg-[#0b0d13]/90 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 md:gap-8">
+                <div className="absolute bottom-2.5 sm:bottom-6 md:bottom-8 left-2.5 sm:left-6 md:left-8 z-20 max-w-md w-[calc(100%-1.25rem)] sm:w-auto">
+                  <div className="p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-[#0b0d13]/90 backdrop-blur-2xl border border-white/20 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-6 md:gap-8">
                     <div>
-                      <span className="block text-[9px] sm:text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-1 font-semibold">
+                      <span className="block text-[8px] sm:text-[10px] font-sans uppercase tracking-[0.22em] text-brand-green tabular-nums mb-0.5 font-semibold">
                         0{idx + 1} · Architectural System
                       </span>
-                      <h3 className="text-base sm:text-xl md:text-3xl font-serif text-white leading-tight">
+                      <h3 className="text-sm sm:text-xl md:text-3xl font-serif text-white leading-tight">
                         {cat.title}
                       </h3>
                     </div>
 
                     <Link
                       to={cat.link}
-                      className="group inline-flex items-center justify-between gap-2.5 sm:gap-3 pl-3.5 sm:pl-5 pr-1.5 sm:pr-2 py-1.5 sm:py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-[11px] sm:text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95"
+                      className="group inline-flex items-center justify-between gap-2 sm:gap-3 pl-3 sm:pl-5 pr-1.5 sm:pr-2 py-1 sm:py-2 rounded-full bg-brand-blue hover:bg-white text-white hover:text-brand-dark text-[10px] sm:text-xs font-semibold uppercase tracking-wider transition-all duration-300 shrink-0 active:scale-95 self-start sm:self-auto"
                     >
                       <span>Explore</span>
                       <span className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-white/20 group-hover:bg-brand-blue group-hover:text-white flex items-center justify-center transition-colors">

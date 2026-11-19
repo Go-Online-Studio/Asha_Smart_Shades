@@ -14,14 +14,12 @@ export default function Products() {
   const archFrameRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const glassCardRef = useRef<HTMLDivElement>(null);
-  const floatingCropRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
     const archFrame = archFrameRef.current;
     const img = imgRef.current;
     const glassCard = glassCardRef.current;
-    const floatingCrop = floatingCropRef.current;
     if (!section || !archFrame || !img || !glassCard || prefersReducedMotion()) return;
 
     const cleanupAssets = refreshAfterAssetsLoaded(section);
@@ -29,25 +27,26 @@ export default function Products() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         archFrame,
-        { clipPath: 'inset(10% 8% 10% 8% round 60px)' },
+        { clipPath: 'inset(6% 4% 6% 4% round 32px)', opacity: 0.4 },
         {
-          clipPath: 'inset(0% 0% 0% 0% round 60px)',
-          ease: 'none',
+          clipPath: 'inset(0% 0% 0% 0% round 32px)',
+          opacity: 1,
+          duration: 1.1,
+          ease: 'power3.out',
           scrollTrigger: {
-            trigger: section,
-            start: 'top 75%',
-            end: 'top 20%',
-            scrub: 0.5,
+            trigger: archFrame,
+            start: 'top 85%',
+            once: true,
           },
         }
       );
 
       gsap.fromTo(
         img,
-        { scale: 1.18, yPercent: -10 },
+        { scale: 1.08, yPercent: -4 },
         {
-          scale: 1.02,
-          yPercent: 10,
+          scale: 1.01,
+          yPercent: 4,
           ease: 'none',
           scrollTrigger: {
             trigger: section,
@@ -60,36 +59,19 @@ export default function Products() {
 
       gsap.fromTo(
         glassCard,
-        { y: 60, opacity: 0 },
+        { y: 35, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.95,
+          duration: 0.85,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: glassCard,
-            start: 'top 86%',
+            trigger: archFrame,
+            start: 'top 75%',
             once: true,
           },
         }
       );
-
-      if (floatingCrop) {
-        gsap.fromTo(
-          floatingCrop,
-          { y: -35 },
-          {
-            y: 45,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.5,
-            },
-          }
-        );
-      }
     }, section);
 
     return () => {
@@ -101,7 +83,7 @@ export default function Products() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full py-16 sm:py-24 md:py-36 bg-[#0b110f] text-white overflow-hidden"
+      className="relative w-full py-16 sm:py-24 md:py-32 bg-[#0b110f] text-white overflow-hidden"
     >
       {/* Ambient Emerald & Cobalt Glows */}
       <div
@@ -114,71 +96,55 @@ export default function Products() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Top Overlapping Giant Display Heading */}
-        <div className="relative z-30 mb-6 sm:mb-10 lg:-mb-12 lg:max-w-3xl pointer-events-none">
-          <div className="inline-flex items-center gap-2.5 text-xs font-sans uppercase tracking-[0.22em] text-brand-green mb-3">
+        {/* Editorial Section Header */}
+        <div className="max-w-3xl mb-6 sm:mb-12 lg:mb-14">
+          <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-sans uppercase tracking-[0.22em] text-brand-green mb-2.5 font-semibold">
             <span>02</span>
             <span aria-hidden="true">·</span>
             <span>Bespoke Engineering</span>
           </div>
           <AnimatedHeading
             as="h2"
-            className="text-3xl sm:text-5xl lg:text-7xl xl:text-[5rem] font-serif text-white leading-[1.14] tracking-tight drop-shadow-2xl"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-serif text-white leading-[1.14] tracking-tight drop-shadow-2xl"
           >
             Intelligent Exterior Shading
           </AnimatedHeading>
         </div>
 
-        {/* True Single-Row Overlapping 12-Column Stage using lg:row-start-1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-0 items-center">
-          {/* Left Sculpted Arch Viewport (Cols 1-8, Row 1) — 4:3 mobile, 16:10 desktop */}
-          <div className="lg:col-start-1 lg:col-end-8 lg:row-start-1 relative z-10">
-            <div
-              ref={archFrameRef}
-              className="relative aspect-[4/3] md:aspect-[16/10] w-full overflow-hidden rounded-2xl sm:rounded-t-[6rem] sm:rounded-bl-[4rem] sm:rounded-br-2xl border border-white/15 shadow-[0_30px_80px_rgba(0,0,0,0.65)] will-change-transform"
-            >
-              <picture className="block w-full h-full">
-                <source media="(max-width: 768px)" srcSet={productsSectionImage.mobileImage} />
-                <img
-                  ref={imgRef}
-                  src={productsSectionImage.desktopImage}
-                  alt="Intelligent Exterior Shading"
-                  className="w-full h-full object-cover will-change-transform"
-                />
-              </picture>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b110f]/75 via-transparent to-black/25" />
-            </div>
-
-            {/* Secondary Overlapping Detail Lens */}
-            <div
-              ref={floatingCropRef}
-              className="hidden md:block absolute -bottom-10 -left-8 z-20 w-48 h-48 rounded-full overflow-hidden border-4 border-[#0b110f] shadow-2xl will-change-transform"
-            >
+        {/* Large-Scale Immersive Architectural Showcase Frame */}
+        <div className="relative w-full">
+          <div
+            ref={archFrameRef}
+            className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] overflow-hidden rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.7)] will-change-transform"
+          >
+            <picture className="block w-full h-full">
+              <source media="(max-width: 768px)" srcSet={productsSectionImage.mobileImage} />
               <img
+                ref={imgRef}
                 src={productsSectionImage.desktopImage}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover origin-[50%_25%]  scale-400"
+                alt="Intelligent Exterior Shading Cantilever System"
+                className="w-full h-full object-cover will-change-transform"
               />
-            </div>
+            </picture>
+
+            {/* Subtle Vignette — desktop only so mobile photo remains 100% clean */}
+            <div className="hidden sm:block pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent" />
           </div>
 
-          {/* Right Overlapping Dark-Glass Editorial Slab (Cols 6-13, Row 1) */}
-          <div className="lg:col-start-6 lg:col-end-13 lg:row-start-1 relative z-30 lg:mt-28">
-            <div
-              ref={glassCardRef}
-              className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 bg-[#0d1512]/90 backdrop-blur-3xl border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.85)] will-change-transform"
-            >
-              <div className="w-12 h-[2px] bg-brand-green mb-5 sm:mb-8" />
-              <p className="text-sm sm:text-base md:text-lg text-white/85 leading-relaxed font-sans mb-7 sm:mb-10">
-                Based in Makarpura GIDC, Vadodara, Asha Smart Shades has been designing and producing personalized and unique <strong className="text-white font-semibold">outdoor solutions</strong> for luxury residential and commercial spaces. We provide custom CAD estimates, precise site measurements, and professional architectural design consultations to seamlessly extend your living and working environments.
-              </p>
+          {/* Editorial Content Card: Cleanly BELOW image on mobile, floating overlay on desktop */}
+          <div
+            ref={glassCardRef}
+            className="mt-2.5 sm:mt-0 sm:absolute sm:bottom-8 sm:right-8 z-20 w-full sm:max-w-md p-3 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-[#0d1512]/90 sm:bg-[#0b110f]/85 backdrop-blur-xl border border-white/15 shadow-xl sm:shadow-2xl will-change-transform text-white"
+          >
+            <div className="w-6 sm:w-8 h-[2px] bg-brand-green mb-2 sm:mb-3" />
+            <p className="text-[11px] sm:text-sm md:text-[15px] text-white/90 leading-relaxed font-sans mb-3 sm:mb-5">
+              Engineered in Vadodara for luxury residences and commercial spaces. Custom CAD estimates and bespoke cantilever shading built to withstand the elements.
+            </p>
 
-              <MagneticButton to="/products/retractable-awnings" variant="primary">
-                <span>DISCOVER MORE</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </MagneticButton>
-            </div>
+            <MagneticButton to="/products/retractable-awnings" variant="primary">
+              <span className="text-[11px] sm:text-xs">DISCOVER MORE</span>
+              <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </MagneticButton>
           </div>
         </div>
       </div>

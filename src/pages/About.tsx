@@ -133,8 +133,8 @@ export default function About() {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
               />
             </picture>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent flex flex-col justify-end p-6 sm:p-8 md:p-12">
-              <h3 className="text-white text-2xl sm:text-3xl md:text-4xl font-serif">Precision Engineered</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent flex flex-col justify-end p-4 sm:p-8 md:p-12">
+              <h3 className="text-white text-base sm:text-3xl md:text-4xl font-serif">Precision Engineered</h3>
             </div>
           </div>
 
@@ -147,14 +147,14 @@ export default function About() {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
               />
             </picture>
-            <div className="absolute inset-0 bg-[#0b0d13]/75 backdrop-blur-[3px] flex items-center justify-center p-5 sm:p-8 text-center">
-              <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white/[0.08] backdrop-blur-2xl border border-white/15 w-full">
-                <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-serif mb-4 sm:mb-6">
+            <div className="absolute inset-0 bg-[#0b0d13]/75 backdrop-blur-[3px] flex items-center justify-center p-3.5 sm:p-8 text-center">
+              <div className="p-4 sm:p-8 rounded-xl sm:rounded-3xl bg-white/[0.08] backdrop-blur-2xl border border-white/15 w-full">
+                <h3 className="text-white text-sm sm:text-2xl md:text-3xl font-serif mb-3 sm:mb-6">
                   Let&apos;s Discuss Your Vision
                 </h3>
                 <MagneticButton to="/contact" variant="primary">
-                  <span>Contact Us</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="text-xs sm:text-sm">Contact Us</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </MagneticButton>
               </div>
             </div>
@@ -164,45 +164,64 @@ export default function About() {
 
       {/* Editorial Narrative Block */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 md:pb-32">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center glass-panel rounded-2xl sm:rounded-3xl p-6 sm:p-12 md:p-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-12 md:p-16">
           <div className="lg:col-span-5">
             <AnimatedHeading
               as="h2"
-              className="text-2xl sm:text-4xl md:text-5xl font-serif text-brand-charcoal leading-tight"
+              className="text-xl sm:text-4xl md:text-5xl font-serif text-brand-charcoal leading-tight"
             >
               Crafting the Outdoors
             </AnimatedHeading>
-            <div className="w-16 h-[2px] bg-brand-blue mt-4 sm:mt-6" />
+            <div className="w-12 sm:w-16 h-[2px] bg-brand-blue mt-3 sm:mt-6" />
           </div>
           <div className="lg:col-span-7">
-            <p className="text-brand-charcoal/80 text-sm sm:text-base md:text-lg leading-relaxed">
+            <p className="text-brand-charcoal/80 text-xs sm:text-base md:text-lg leading-relaxed">
               At Asha Smart Shades, we believe that outdoor spaces hold the potential to become the most cherished parts of any property. From initial CAD estimates in our Makarpura workshop to final installations, our approach marries architectural elegance with robust Indian engineering. We use state-of-the-art tensile fabrics, precision-cut aluminum, and motorized systems to ensure every structure is not just beautiful, but built to withstand the elements.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Sculpted Full-Width Showcase CTA — Uses 4:3 mobile and 16:10 desktop with dual-image support */}
+      {/* Sculpted Full-Width Showcase CTA — Uses 4:3 mobile and 16:10 desktop with non-obscuring mobile layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
-        <div className="w-full aspect-[4/3] md:aspect-[16/10] max-h-[520px] rounded-2xl sm:rounded-tl-[4.5rem] sm:rounded-br-[4.5rem] sm:rounded-tr-2xl sm:rounded-bl-2xl overflow-hidden relative shadow-2xl">
-          <picture className="block w-full h-full">
-            <source media="(max-width: 768px)" srcSet={aboutImages.cta.mobileImage} />
-            <img
-              src={aboutImages.cta.desktopImage}
-              alt="Outdoor lifestyle"
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/85 via-[#07090e]/55 to-transparent flex flex-col items-start justify-center text-left p-6 sm:p-14 md:p-20">
-            <AnimatedHeading
-              as="h2"
-              className="text-white text-2xl sm:text-5xl md:text-6xl font-serif mb-6 sm:mb-8 max-w-xl"
-            >
+        <div className="relative w-full">
+          {/* Image Frame — 100% visible on mobile with zero text on top */}
+          <div className="w-full aspect-[4/3] md:aspect-[16/10] max-h-[520px] rounded-2xl sm:rounded-tl-[4.5rem] sm:rounded-br-[4.5rem] sm:rounded-tr-2xl sm:rounded-bl-2xl overflow-hidden relative shadow-2xl">
+            <picture className="block w-full h-full">
+              <source media="(max-width: 768px)" srcSet={aboutImages.cta.mobileImage} />
+              <img
+                src={aboutImages.cta.desktopImage}
+                alt="Outdoor lifestyle"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+              />
+            </picture>
+            <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#07090e]/85 via-[#07090e]/55 to-transparent" />
+          </div>
+
+          {/* Desktop Overlay Content */}
+          <div className="hidden sm:flex absolute inset-0 flex-col items-start justify-center text-left p-6 sm:p-14 md:p-20 pointer-events-none">
+            <div className="pointer-events-auto">
+              <AnimatedHeading
+                as="h2"
+                className="text-white text-2xl sm:text-5xl md:text-6xl font-serif mb-6 sm:mb-8 max-w-xl"
+              >
+                Experience Open Air Luxury
+              </AnimatedHeading>
+              <MagneticButton to="/products/retractable-awnings" variant="primary">
+                <span>Explore Our Products</span>
+                <ArrowRight className="w-4 h-4" />
+              </MagneticButton>
+            </div>
+          </div>
+
+          {/* Mobile Clean Content Card — sits cleanly BELOW the image so the entire structure and seating are 100% visible on 344px+ screens */}
+          <div className="sm:hidden mt-3 p-3.5 rounded-xl bg-[#0e121a] border border-white/15 shadow-xl text-white">
+            <h2 className="text-sm font-serif text-white mb-2.5 leading-snug">
               Experience Open Air Luxury
-            </AnimatedHeading>
+            </h2>
             <MagneticButton to="/products/retractable-awnings" variant="primary">
-              <span>Explore Our Products</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-[11px] font-semibold">Explore Our Products</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </MagneticButton>
           </div>
         </div>
