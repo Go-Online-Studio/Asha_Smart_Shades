@@ -115,7 +115,7 @@ export default function Products() {
         <div className="relative w-full">
           <div
             ref={archFrameRef}
-            className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] overflow-hidden rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.7)] will-change-transform"
+            className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[1.5/1] overflow-hidden rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.7)] will-change-transform"
           >
             <picture className="block w-full h-full">
               <source media="(max-width: 768px)" srcSet={productsSectionImage.mobileImage} />
